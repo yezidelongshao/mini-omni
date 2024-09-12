@@ -47,12 +47,13 @@ class OmniChatServer(object):
 
 # CUDA_VISIBLE_DEVICES=1 gunicorn -w 2 -b 0.0.0.0:60808 'server:create_app()'
 def create_app():
+    # 创建OmniChatServer实例
     server = OmniChatServer(run_app=False)
     return server.server
 
 
 def serve(ip='0.0.0.0', port=60808):
-
+    #直接调用服务，并将监听ip和端口绑定
     OmniChatServer(ip, port=port, run_app=True)
 
 
