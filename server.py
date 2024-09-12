@@ -58,6 +58,7 @@ def serve(ip='0.0.0.0', port=60808):
 
 
 if __name__ == "__main__":
+    #这种结构常用于让 Python 文件既可以作为独立的脚本运行，又可以被其他模块导入并复用，而不会在导入时执行特定的主程序代码
     import fire
     fire.Fire(serve)
     
