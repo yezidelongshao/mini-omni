@@ -15,23 +15,26 @@ class OmniChatServer(object):
 
         self.client = OmniInference(ckpt_dir, device)
         self.client.warm_up()
-
+        #定义路由，设置chat路径来处理POST请求，并将请求交由chat()方法处理
         server.route("/chat", methods=["POST"])(self.chat)
-
+        
         if run_app:
+            #运行Flask应用
             server.run(host=ip, port=port, threaded=False)
         else:
+            #只初始化Flask应用而不运行
             self.server = server
 
     def chat(self) -> Response:
-
+        #获取请求数据
         req_data = flask.request.get_json()
         try:
+            #处理音频数据，获取音频数据并将其转换为字节数据
             data_buf = req_data["audio"].encode("utf-8")
+            #解码数据为二进制数据
             data_buf = base64.b64decode(data_buf)
             stream_stride = req_data.get("stream_stride", 4)
             max_tokens = req_data.get("max_tokens", 2048)
-
             with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as f:
                 f.write(data_buf)
                 audio_generator = self.client.run_AT_batch_stream(f.name, stream_stride, max_tokens)
