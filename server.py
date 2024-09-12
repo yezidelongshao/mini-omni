@@ -35,8 +35,10 @@ class OmniChatServer(object):
             data_buf = base64.b64decode(data_buf)
             stream_stride = req_data.get("stream_stride", 4)
             max_tokens = req_data.get("max_tokens", 2048)
+            #将音频文件写入临时文件
             with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as f:
                 f.write(data_buf)
+                #调用OmniInference类实例的run_AT_batch_stream方法生成音频流返回给客户端
                 audio_generator = self.client.run_AT_batch_stream(f.name, stream_stride, max_tokens)
                 return Response(stream_with_context(audio_generator), mimetype="audio/wav")
         except Exception as e:
